@@ -139,7 +139,7 @@ DATABASES = {
         ),
         'PORT': config(
             'DB_PORT',
-            default='3306'
+            default='5432'
         ),
         'USER': config(
             'DB_USER',

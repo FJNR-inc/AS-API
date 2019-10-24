@@ -5,19 +5,19 @@ DB_INSTANCE_ID="db"
 
 DATE=$(date +"%Y-%m-%dT%H-%M")
 
-SNAPCHOT_NAME="$ENV"-"$DATE"
+SNAPSHOT_NAME="$ENV"-"$DATE"
 
 echo -e "\e[32m\e[1mActivate virtualenv\e[0m"
-. /root/ve/bin/activate
+. /opt/project/ve/bin/activate
 
 echo -e "\e[32m\e[1mStop lambda $ENV\e[0m"
 aws lambda put-function-concurrency --function-name task-"$ENV" --reserved-concurrent-executions 0
 
 aws rds create-db-snapshot \
     --db-instance-identifier "$DB_INSTANCE_ID" \
-    --db-snapshot-identifier "$SNAPCHOT_NAME"
+    --db-snapshot-identifier "$SNAPSHOT_NAME"
 
-aws rds wait db-snapshot-completed --db-snapshot-identifier "$SNAPCHOT_NAME"
+aws rds wait db-snapshot-completed --db-snapshot-identifier "$SNAPSHOT_NAME"
 
 echo -e "\e[32m\e[1mActivate lambda $ENV management\e[0m"
 aws lambda delete-function-concurrency --function-name task-"$ENV"manage
@@ -37,7 +37,7 @@ echo -e "\e[32m\e[1mActivate lambda $ENV\e[0m"
 aws lambda delete-function-concurrency --function-name task-"$ENV"
 
 echo -e "\e[32m\e[1mCheck status lambda $ENV\e[0m"
-STATUS=$(curl -s -o /dev/null -w '%{http_code}' https://api.thesez-vous.org/admin/login/)
+STATUS=$(curl -s -o /dev/null -w '%{http_code}' https:///admin/login/)
 if [ "$STATUS" -eq 200 ]; then
     echo -e "Your updated Zappa deployment is \e[32m\e[1mlive\e[0m!: https://qfyxe6xy7d.execute-api.ca-central-1.amazonaws.com/devmanage"
 else

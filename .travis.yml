@@ -4,28 +4,33 @@ services:
 - docker
 python:
 - 3.6
-branches:
-  only:
-  - /.*/
 notifications:
   email:
     on_success: change
     on_failure: change
 before_install:
-  - python3 -c 'import os,sys; os.set_blocking(sys.stdout.fileno(), True)'
+- python3 -c 'import os,sys; os.set_blocking(sys.stdout.fileno(), True)'
 install:
-  - docker-compose build
-  - pip install -r requirements-dev.txt
+- docker-compose build
 before_script:
-  # We will run a postgres service into docker, so wee need to stop the postgres service
-  - sudo service postgresql stop
+- sudo service postgresql stop
 script:
-  - docker-compose run api coverage run manage.py test
-  - docker-compose run api pycodestyle --config=.pycodestylerc .
+- docker-compose run api coverage run manage.py test
+- docker-compose run api pycodestyle --config=.pycodestylerc .
 after_success:
-  - docker-compose run -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS api coveralls
-  - python utils/write_secure_env.py
-  - bash utils/deploy.sh
+- docker-compose run -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS api coveralls
+before_deploy:
+- chmod +x ./utils/deploy_dev.sh
+- python utils/write_secure_env.py
+deploy:
+- provider: script
+  script: "./utils/deploy_dev.sh"
+  skip_cleanup: true
+  on:
+    branch: develop
 env:
   global:
-    -SECRET
+  - secure: mlTbe3e5xll+SF3mYSQVgogaO9+tp0E6WQrSGaKDAslQ7qegFJEzyoY8yw2PgJC0ADD+wj6ERzkB7U4j2QTLJdVobfw82tT/hcB3OZ/yclBqfh9J+BaCmWXuUr4cMLiUF+2eQfeFjP+otbXPIvGJKzlrHMO1qAv/9zNE2b81UscsLzKUkOzKXj5tR6rmfeCqBYIvcdEv/j38uvGcW3J/5AcCESih9XR/Tj6nup3glzDBqsajmRRMLsUzK/sBhTiWh45MWZQiDjGu1/43c4tlqrPsegHlDm8aM+FqLogt4+0Y/0PiLz5MNss2JGAs5WInFYeH0v1m/8yI45mBi9k+Onl9mI1WGvssFWrnWANxOPZkmxa5f94sBKcmARrSdf5+o1ENanGkvLgoD795E4Ve62Z1+4wi4QCFCDYN5VRVV2afDkn98RDGEjcjtYGqbUbfN9Wv358lmnmici87b1VoUp6eQ7NWqcCs90g7nwiss8pLeM9pC6JbLTXV4ODqdJ9wIAR8RvCEaBK6o2Fdxf7JwhG6GCj6FwhRbv0LQZJOnvmyf/jXBlQ3gbwB2J0LTbLzpj2pbRhgRdi0JUO4m1nswGgEbnzPzscIbRJIjp23/7vaP2izii9i/o8OSQTS83+1/HZqtFxtdr0cvBdSSbLdeFq2Y1YLcjKEdytVmNKV85M=
+  - secure: mDW3Fj9YTfkNFzTU0KnP2dqU8+/fNpESmUFKesjxR3c8PANnwgiyJa8iPu6jfSZc06pxmf152vAVCzAB94HJSuNpxMJ9sKPr3YggFi8vP7YL0AXe4iuzp2hXCc0l0oMZ4JumeKxIUM4a9mSvo/VrFvDrIWhdleSe5gkVfpUBlbhZN24zY2heVxjijOL9Leesg3ynwN/cEhDbQacKmOA4tj2cHodz6iGtLVPAUFxo5om6bU7pRbBXVKW1oZGlzczYrpLB2GvcgvwVNG5AIsoB+g7O5R41TdnYfWbjb7pYpy6AVjHC1RHfQrZfUF101z4W/dgeXUQQ69CFjh4pRfeOLvBMCEPSX1Uw5TVHofPgeK78WlhjdYWIdqLOfosmQtYL/Nnizwbe6WLk5d67SXChyYqAg8GreE0DOPK6j0hZvG2NXvv1942uVvFfMxPFA7DnHt9EVLlRiRpLMcTCa2Z1UkyPEep+McoLre8bj7hhXzUqlTRT73OYq9pxK24F67Nnd8dU0138qoqdig04glQwgZ9lAIiLHCltJv07NOl3qlii8Fh46vA8jVCzyJwLA4TeVzvQQ5R+LSJVP8HMBJXOtQeFT1zeDRvdX9ikJk1QRKEWhIcEuuv0rjdNEg+7acoPJCLQlq8zHDyrLIBcMMZ9BT2FxXzPEretEtgbdiI4JNs=
+  - secure: jgsKEyLFjTuww5+ONeimtkodVk1yyQm1ulEBPi6azAL2VP1rjNIW5HdiqZpSC+GYLRgAdxcdXDGwkJDHV2//tTIcg5a8bauL66btEgGA21YGQZ/tqxfydz9ZQLYwzf6JxdqFwoyrMlXAgTd88W6nzOb3Oto2ogRt4cE6TYXhsQywZQe/e4qI+CectgGTwnrigbTQ65PQ9CQLCsXRsNfwJliIiHwJ67rgmP0FdLjWBUAfVfvkq9ZtDWTwko/Pqkj2pkfniwe3eIOaFxSVK4wJbvAoY6lfR9oJdq/5cji44DNyYrCsete06+87K25bUJLhrNkFpNHqVwzoQlgU/L55rcoKBGQ3hn9GJzLP/M4V9U6kcuHNF2fWqsvJry3++uizNB6pwuTVumjDSNQaBvk7wPtob5a0g4YlhvYkG8VZNwdK4hJ3GxxAlumf05+UEfeA9+4n6bjMrLAfwAL1Y4yzjUTzSaRzuZv2zH5ZqcWLLZA797z+x5d6K1rQG7rULaEPUcA4YCpPRq+4Iz7IHcY9zLXGMjbzNFNe+wNnL0iUAhGIgq/sDpRTJ/38ApLXp6z2YVCTXfp24L28nvfRIM1syFcxTXA9MACLJOY7zP4Til/UfUyeiIhCTI84+c8Aj9tAkcIV5iV38YkOGYz5qV0mW5nSwd4lVRGx/a3Y+yyq6aI=
+  - secure: RrzhKPtrJgzJ5Xa5C5o2mHNobpAbPA2jmgMFN0Jie+A56/TyOD4itTogveROKBVTtxJpDRXxtoQxIxFPe6Ul63vDg3MOgZi5wEfJyojc+u+dkfnZgvarWMMhy1zIK44AZ8KprVRW+ufh4xkvRoJ1/dVAEokulxjbiqxDmbfmlpWjCdoXkrZs7Og8ZZ/8sKQjqtTogSpZ8Q/JJR1N8v3gZYYOlqkidqVInYKG3SckMxctC+WgdKwD7TNdh9JJZL9SCYkjHfKiq/DmAWYNDyVDoSvaGIMsMR+oDAqLHVqg/lp/KNjyKoBE+rYYnO8tCiS91J+vfJFEI1H5pRs4Tq0MWe9OfMtz391qw+/dbWOnAzzRo/E40/ej7R78N5/EGYfuimvKzhIb9WGhe0DogMAvHXV4tt9ZtNhS8/pJGpjjOV211nCvcrnRRE2DrrmTzIuhufvTYaQb0MNZIpNo8E2oLSzTJret5A8J9tWuzfmwqoRArUQ8un4dENv5GHytswcNfz5S8JgIKxys7bNx7lZntDQlAo6uzc5ONlJ40s/M110YQmB/WDOCPCSfh2jGVYUSPqFawChj5FLUVR11/VyRSG3irU/TnSL+RTHciD7+p9wrjau5i2S2AbViOvmBN6IY3h0HSYU798l+Du28V+2FHxRMGGXwosjvjqS5G76qkt8=
