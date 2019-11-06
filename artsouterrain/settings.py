@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     'artsouterrain.apps.user',
     'artsouterrain.apps.artwork',
+    'artsouterrain.apps.event',
     'anymail',
     'corsheaders',
 ]

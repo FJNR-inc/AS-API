@@ -24,6 +24,7 @@ from artsouterrain.apps.user.urls import urlpatterns as user_urls
 from artsouterrain.apps.user.views import FacebookLogin
 
 from artsouterrain.apps.artwork.urls import router as artwork_router
+from artsouterrain.apps.event.urls import router as event_router
 
 
 class OptionalSlashDefaultRouter(DefaultRouter):
@@ -38,6 +39,7 @@ class OptionalSlashDefaultRouter(DefaultRouter):
 router = OptionalSlashDefaultRouter()
 
 router.registry.extend(artwork_router.registry)
+router.registry.extend(event_router.registry)
 
 urlpatterns = [
     path(
