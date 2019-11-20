@@ -53,6 +53,12 @@ class Event(models.Model):
         max_length=1024
     )
 
+    date = models.DateTimeField(
+        verbose_name=_("Date"),
+        blank=True,
+        null=True
+    )
+
     event_type = models.ForeignKey(
         'EventType',
         verbose_name=_("Event Type"),
