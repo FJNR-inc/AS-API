@@ -101,7 +101,7 @@ class ArtworkTypeViewSet(viewsets.ModelViewSet):
 
 class ArtworkViewSet(viewsets.ModelViewSet):
     queryset = Artwork.objects.all()
-    filter_fields = ('artist', 'place', 'artwork_type')
+    filter_fields = ('artist', 'place', 'artwork_type', 'level')
     permission_classes = ()
 
     def get_serializer_class(self):

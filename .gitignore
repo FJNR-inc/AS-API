@@ -104,3 +104,7 @@ ENV/
 *.sqlite3
 /.idea/
 /ve/
+
+
+# Media
+media/

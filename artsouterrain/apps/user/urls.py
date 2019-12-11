@@ -18,6 +18,8 @@ class OptionalSlashDefaultRouter(DefaultRouter):
 # Create a router and register our viewsets with it.
 router = OptionalSlashDefaultRouter()
 
+router.register('contact', views.ContactViewSet)
+
 urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^accounts/', include('allauth.urls'), name='socialaccount_signup'),

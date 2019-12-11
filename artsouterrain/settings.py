@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
-    'ALLOWED_HOSTS', default='127.0.0.1, localhost', cast=Csv())
+    'ALLOWED_HOSTS', default='127.0.0.1, localhost, 10.0.2.2', cast=Csv())
 
 # Application definition
 
@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'artsouterrain',
     'rest_framework',
+    'artsouterrain',
     'rest_framework.authtoken',
     'rest_auth',
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
 
+    'artsouterrain.apps.quizz',
     'artsouterrain.apps.user',
     'artsouterrain.apps.artwork',
     'artsouterrain.apps.event',
@@ -154,6 +155,9 @@ DATABASES = {
     }
 }
 
+
+AUTH_USER_MODEL = 'user.User'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -231,6 +235,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL',
                             default='noreply@example.org')
 SERVER_EMAIL = config('SERVER_EMAIL', default='example@gmail.com')
 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
