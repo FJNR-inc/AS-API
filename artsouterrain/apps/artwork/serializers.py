@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from artsouterrain.apps.artwork.models import Partner, PartnerType, Artwork, \
-    ArtworkType, Place, Artist
+    ArtworkType, Place, Artist, ArtworkMedia, ArtworkVisit
 
 
 class PartnerTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -63,4 +63,31 @@ class ArtworkSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Artwork
+        fields = '__all__'
+
+
+class ArtworkSerializerHyperlink(serializers.HyperlinkedModelSerializer):
+
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Artwork
+        fields = '__all__'
+
+
+class ArtworkMediaSerializer(serializers.HyperlinkedModelSerializer):
+
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ArtworkMedia
+        fields = '__all__'
+
+
+class ArtworkVisitSerializer(serializers.HyperlinkedModelSerializer):
+
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ArtworkVisit
         fields = '__all__'

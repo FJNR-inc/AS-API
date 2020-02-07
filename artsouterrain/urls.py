@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include, url
+from django.conf import settings
+from django.conf.urls import include
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 from django.views.generic import TemplateView
@@ -58,4 +60,5 @@ urlpatterns = [
     ), name='redoc'),
     path('', include(user_urls)),
     path('', include(router.urls)),  # includes router generated URL
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + \
+              static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

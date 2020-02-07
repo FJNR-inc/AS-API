@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from artsouterrain.apps.artwork.models import Partner, PartnerType, Artwork, \
-    ArtworkType, Place, Artist
+    ArtworkType, Place, Artist, ArtworkMedia, ArtworkVisit
 from . import serializers
 
 
@@ -106,6 +106,42 @@ class ArtworkViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return serializers.ArtworkSerializer
+
+    def create(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class ArtworkMediaViewSet(viewsets.ModelViewSet):
+    queryset = ArtworkMedia.objects.all()
+    filter_fields = ('artwork', 'media_type',)
+    permission_classes = ()
+
+    def get_serializer_class(self):
+        return serializers.ArtworkMediaSerializer
+
+    def create(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class ArtworkVisitViewSet(viewsets.ModelViewSet):
+    queryset = ArtworkVisit.objects.all()
+    filter_fields = ('artwork', 'email',)
+    permission_classes = ()
+
+    def get_serializer_class(self):
+        return serializers.ArtworkMediaSerializer
 
     def create(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)

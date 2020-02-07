@@ -15,6 +15,7 @@ from .models import (
     Choice,
     Submission,
 )
+from ..artwork.serializers import ArtworkSerializerHyperlink
 
 
 class AssessmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,9 +27,18 @@ class AssessmentSerializer(serializers.HyperlinkedModelSerializer):
         model = Assessment
         fields = '__all__'
 
+    def to_representation(self, instance):
+        """Convert HyperlinkedField to NestedSerializer."""
+        self.fields.pop('artwork')
+        artwork = ArtworkSerializerHyperlink(many=False, read_only=True)
+        self.fields['artwork'] = artwork
+
+        return super().to_representation(instance)
+
     def get_is_completed(self, instance):
         if 'Email' in self.context['request'].headers.keys():
-            active_submission = get_active_submission(self.context['request'].headers['Email'])
+            active_submission = get_active_submission(
+                self.context['request'].headers['Email'])
 
             if active_submission:
                 questions = Question.objects.filter(page__assessment=instance)
@@ -73,10 +83,12 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_correctly_answered(self, instance):
         if 'Email' in self.context['request'].headers.keys():
-            active_submission = get_active_submission(self.context['request'].headers['Email'])
+            active_submission = get_active_submission(
+                self.context['request'].headers['Email'])
 
             if active_submission:
-                answer =  instance.answers.filter(submission=active_submission).first()
+                answer = instance.answers.filter(
+                    submission=active_submission).first()
 
                 if answer:
                     return answer.is_valid
@@ -85,7 +97,8 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_is_completed(self, instance):
         if 'Email' in self.context['request'].headers.keys():
-            active_submission = get_active_submission(self.context['request'].headers['Email'])
+            active_submission = get_active_submission(
+                self.context['request'].headers['Email'])
 
             if active_submission:
                 contain_answer = instance.answers.filter(

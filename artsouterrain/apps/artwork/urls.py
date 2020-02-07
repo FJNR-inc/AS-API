@@ -22,6 +22,8 @@ router.register('place', views.PlaceViewSet)
 router.register('artist', views.ArtistViewSet)
 router.register('artwork_type', views.ArtworkTypeViewSet)
 router.register('artwork', views.ArtworkViewSet)
+router.register('artwork_media', views.ArtworkMediaViewSet)
+router.register('artwork_visit', views.ArtworkVisitViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),  # includes router generated URL
