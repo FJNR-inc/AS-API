@@ -47,7 +47,7 @@ class PartnerTypeViewSet(viewsets.ModelViewSet):
 
 class ArtistViewSet(viewsets.ModelViewSet):
     queryset = Artist.objects.all()
-    filter_fields = '__all__'
+    filter_fields = ('first_name', 'last_name', 'country' )
     permission_classes = ()
 
     def get_serializer_class(self):
@@ -65,7 +65,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
-    filter_fields = '__all__'
+    filter_fields = ('name',)
     permission_classes = ()
 
     def get_serializer_class(self):
@@ -105,6 +105,10 @@ class ArtworkViewSet(viewsets.ModelViewSet):
     permission_classes = ()
 
     def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.ArtworkSerializerList
+        if self.action == 'retrieve':
+            return serializers.ArtworkSerializerDetail
         return serializers.ArtworkSerializer
 
     def create(self, request, *args, **kwargs):

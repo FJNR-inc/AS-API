@@ -42,12 +42,18 @@ class ArtworkAdmin(TranslationAdmin):
                     'latitude',
                     'longitude',
                     'qr_code_token',
+                    'plan',
+                    'index_itinerary',
+                    'next_artwork',
+                    'previous_artwork',
                 )
             }
          ),
     )
 
-    readonly_fields = ('qr_code_token',)
+    readonly_fields = (
+        'qr_code_token', 'next_artwork', 'previous_artwork',
+    )
 
 
 @admin.register(ArtworkMedia)

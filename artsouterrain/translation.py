@@ -16,16 +16,16 @@ class PartnerTypeTranslationOptions(TranslationOptions):
 class PartnerTranslationOptions(TranslationOptions):
     fields = (
         'name',
-        'description'
+        'description',
+        'link'
     )
 
 
 @register(Artist)
 class ArtistTranslationOptions(TranslationOptions):
     fields = (
-        'first_name',
-        'last_name',
         'country',
+        'bio'
     )
 
 

@@ -109,3 +109,6 @@ ENV/
 # Media
 media/
 /ve_deploy/
+
+zappa_settings.json
+/zappa_settings.json

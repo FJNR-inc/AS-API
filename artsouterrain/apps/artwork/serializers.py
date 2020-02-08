@@ -33,6 +33,15 @@ class ArtistSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+class ArtistSerializerSmall(ArtistSerializer):
+
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Artist
+        fields = ('id', 'url', 'first_name','last_name', 'country')
+
+
 class PlaceSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.ReadOnlyField()
@@ -55,24 +64,58 @@ class ArtworkSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.ReadOnlyField()
 
+    class Meta:
+        model = Artwork
+        fields = '__all__'
+
+
+class ArtworkSerializerSmall(ArtworkSerializer):
+
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Artwork
+        fields = ('id', 'url', 'name', 'picture')
+
+
+class ArtworkSerializerDetail(ArtworkSerializer):
+
+    id = serializers.ReadOnlyField()
+
     artist = ArtistSerializer(many=False)
 
     place = PlaceSerializer(many=False)
 
     artwork_type = ArtworkTypeSerializer(many=False)
 
+    next_artwork = ArtworkSerializerSmall(
+        many=False,
+        read_only=True,
+        allow_null=True
+    )
+
+    previous_artwork = ArtworkSerializerSmall(
+        many=False,
+        read_only=True,
+        allow_null=True
+    )
+
     class Meta:
         model = Artwork
         fields = '__all__'
 
 
-class ArtworkSerializerHyperlink(serializers.HyperlinkedModelSerializer):
+class ArtworkSerializerList(ArtworkSerializerDetail):
 
     id = serializers.ReadOnlyField()
 
+    artist = ArtistSerializerSmall()
+
     class Meta:
         model = Artwork
-        fields = '__all__'
+        fields = (
+            'id', 'url', 'name', 'picture',
+            'place', 'artist', 'longitude', 'latitude')
 
 
 class ArtworkMediaSerializer(serializers.HyperlinkedModelSerializer):

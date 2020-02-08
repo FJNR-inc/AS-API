@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import F
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -35,11 +36,10 @@ class Partner(models.Model):
         blank=True
     )
 
-    link = models.URLField(
+    link = models.TextField(
         verbose_name=_("Url to partner"),
         null=True,
         blank=True,
-        max_length=1024
     )
 
     description = models.TextField(
@@ -83,6 +83,12 @@ class Artist(models.Model):
         blank=True
     )
 
+    bio = models.TextField(
+        verbose_name=_("Bio"),
+        blank=True,
+        null=True,
+    )
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -94,6 +100,12 @@ class Place(models.Model):
         null=False,
         blank=False,
         max_length=100
+    )
+
+    plan = models.ImageField(
+        verbose_name=_("Picture"),
+        null=True,
+        blank=True
     )
 
     def __str__(self):
@@ -147,6 +159,18 @@ class Artwork(models.Model):
         blank=True
     )
 
+    plan = models.ImageField(
+        verbose_name=_("Plan"),
+        null=True,
+        blank=True
+    )
+
+    index_itinerary = models.IntegerField(
+        verbose_name=_("Index Itinerary"),
+        null=True,
+        blank=True
+    )
+
     artwork_type = models.ForeignKey(
         ArtworkType,
         verbose_name=_("Artwork Type"),
@@ -172,6 +196,12 @@ class Artwork(models.Model):
         null=True,
     )
 
+    creation_year = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+
     qr_code_token = models.UUIDField(
         default=uuid.uuid4,
         editable=False,
@@ -181,6 +211,24 @@ class Artwork(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    @property
+    def next_artwork(self):
+        if self.index_itinerary:
+            return Artwork.objects\
+                .filter(index_itinerary__gt=self.index_itinerary)\
+                .order_by('index_itinerary').first()
+        else:
+            return None
+
+    @property
+    def previous_artwork(self):
+        if self.index_itinerary:
+            return Artwork.objects\
+                .filter(index_itinerary__lt=self.index_itinerary)\
+                .order_by('-index_itinerary').first()
+        else:
+            return None
 
 
 class ArtworkMedia(models.Model):
@@ -248,22 +296,24 @@ class UpdateData(models.Model):
         verbose_name=_('Places file')
     )
 
-    places_text = models.TextField(null=True, blank=True)
+    artworks = models.FileField(
+        verbose_name=_('Artworks File')
+    )
 
     artwork_types = models.FileField(
         verbose_name=_('Artwork Types file')
     )
-    artwork_types_text = models.TextField(null=True, blank=True)
 
     artists = models.FileField(
         verbose_name=_('Artists File')
     )
-    artists_text = models.TextField(null=True, blank=True)
 
-    artworks = models.FileField(
-        verbose_name=_('Artworks File')
-    )
+    places_text = models.TextField(null=True, blank=True)
+    partner_type_text = models.TextField(null=True, blank=True)
+    artwork_types_text = models.TextField(null=True, blank=True)
+    partner_text = models.TextField(null=True, blank=True)
     artworks_text = models.TextField(null=True, blank=True)
+    artists_text = models.TextField(null=True, blank=True)
 
     def update_data(self):
 

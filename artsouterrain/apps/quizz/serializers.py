@@ -15,7 +15,7 @@ from .models import (
     Choice,
     Submission,
 )
-from ..artwork.serializers import ArtworkSerializerHyperlink
+from ..artwork.serializers import ArtworkSerializer
 
 
 class AssessmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -30,7 +30,7 @@ class AssessmentSerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         """Convert HyperlinkedField to NestedSerializer."""
         self.fields.pop('artwork')
-        artwork = ArtworkSerializerHyperlink(many=False, read_only=True)
+        artwork = ArtworkSerializer(many=False, read_only=True)
         self.fields['artwork'] = artwork
 
         return super().to_representation(instance)
