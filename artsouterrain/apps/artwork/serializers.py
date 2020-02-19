@@ -13,6 +13,23 @@ class PartnerTypeSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+class PartnerExtractSerializer(serializers.ModelSerializer):
+
+    logo = serializers.FileField(use_url=False)
+
+    class Meta:
+        model = Partner
+        fields = '__all__'
+
+
+class PartnerTypeExtractSerializer(serializers.ModelSerializer):
+    partner_set = PartnerExtractSerializer(many=True)
+
+    class Meta:
+        model = PartnerType
+        fields = '__all__'
+
+
 class PartnerSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.ReadOnlyField()
@@ -21,6 +38,15 @@ class PartnerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Partner
+        fields = '__all__'
+
+
+class ArtistExtractSerializer(serializers.ModelSerializer):
+
+    picture = serializers.FileField(use_url=False)
+
+    class Meta:
+        model = Artist
         fields = '__all__'
 
 
@@ -42,6 +68,15 @@ class ArtistSerializerSmall(ArtistSerializer):
         fields = ('id', 'url', 'first_name','last_name', 'country')
 
 
+class PlaceExtractSerializer(serializers.ModelSerializer):
+
+    plan = serializers.FileField(use_url=False)
+
+    class Meta:
+        model = Place
+        fields = '__all__'
+
+
 class PlaceSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.ReadOnlyField()
@@ -51,12 +86,36 @@ class PlaceSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+class ArtworkTypeExtractSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ArtworkType
+        fields = '__all__'
+
+
 class ArtworkTypeSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.ReadOnlyField()
 
     class Meta:
         model = ArtworkType
+        fields = '__all__'
+
+
+class ArtworkExtractSerializer(serializers.ModelSerializer):
+
+    artist = ArtistExtractSerializer(many=False)
+
+    place = PlaceExtractSerializer(many=False)
+
+    artwork_type = ArtworkTypeExtractSerializer(many=False)
+
+    plan = serializers.FileField(use_url=False)
+
+    picture = serializers.FileField(use_url=False)
+
+    class Meta:
+        model = Artwork
         fields = '__all__'
 
 

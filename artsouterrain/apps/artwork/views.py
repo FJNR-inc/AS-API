@@ -26,6 +26,12 @@ class PartnerViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
+class PartnerExtractViewSet(PartnerViewSet):
+
+    def get_serializer_class(self):
+        return serializers.PartnerExtractSerializer
+
+
 class PartnerTypeViewSet(viewsets.ModelViewSet):
 
     queryset = PartnerType.objects.all()
@@ -43,6 +49,12 @@ class PartnerTypeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class PartnerTypeExtractViewSet(PartnerTypeViewSet):
+
+    def get_serializer_class(self):
+        return serializers.PartnerTypeExtractSerializer
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
@@ -63,6 +75,12 @@ class ArtistViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
+class ArtistExtractViewSet(ArtistViewSet):
+
+    def get_serializer_class(self):
+        return serializers.ArtistExtractSerializer
+
+
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
     filter_fields = ('name',)
@@ -81,6 +99,12 @@ class PlaceViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
+class PlaceExtractViewSet(PlaceViewSet):
+
+    def get_serializer_class(self):
+        return serializers.PlaceExtractSerializer
+
+
 class ArtworkTypeViewSet(viewsets.ModelViewSet):
     queryset = ArtworkType.objects.all()
     filter_fields = '__all__'
@@ -97,6 +121,12 @@ class ArtworkTypeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class ArtworkTypeExtractViewSet(ArtworkTypeViewSet):
+
+    def get_serializer_class(self):
+        return serializers.ArtworkTypeExtractSerializer
 
 
 class ArtworkViewSet(viewsets.ModelViewSet):
@@ -119,6 +149,12 @@ class ArtworkViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class ArtworkExtractViewSet(ArtworkViewSet):
+
+    def get_serializer_class(self):
+        return serializers.ArtworkExtractSerializer
 
 
 class ArtworkMediaViewSet(viewsets.ModelViewSet):
