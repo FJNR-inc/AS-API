@@ -100,10 +100,6 @@ class UpdateDataAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'create_date',
-        'places',
-        'artwork_types',
-        'artists',
-        'artworks'
     )
 
     list_filter = (

@@ -11,7 +11,7 @@ from . import serializers
 class EventViewSet(viewsets.ModelViewSet):
 
     queryset = Event.objects.all()
-    filter_fields = ('event_type', 'event_type__key', )
+    filter_fields = ('event_type', )
     permission_classes = ()
 
     def get_serializer_class(self):
@@ -25,6 +25,12 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class EventExtractViewSet(EventViewSet):
+
+    def get_serializer_class(self):
+        return serializers.EventExtractSerializer
 
 
 class EventTypeViewSet(viewsets.ModelViewSet):
@@ -44,3 +50,9 @@ class EventTypeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+
+class EventTypeExtractViewSet(EventTypeViewSet):
+
+    def get_serializer_class(self):
+        return serializers.EventTypeExtractSerializer

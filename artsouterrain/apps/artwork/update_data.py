@@ -1,9 +1,13 @@
 import csv
+import datetime
 from io import StringIO
 
 from artsouterrain.apps.artwork.models import UpdateData, Artist, Artwork, \
     ArtworkType, Place, PartnerType, Partner
 from django.core.files.storage import default_storage
+
+from artsouterrain.apps.event.models import Event, EventType
+from artsouterrain.apps.quizz.models import Question, Page, Assessment, Choice
 
 
 class UpdateDataProcess:
@@ -14,6 +18,12 @@ class UpdateDataProcess:
     artworks = dict()
     partner_types = dict()
     partners = dict()
+
+    event_types = dict()
+    events = dict()
+
+    questions = dict()
+    choices = dict()
 
     def __init__(self, update_data: UpdateData):
         self.update_data = update_data
@@ -33,9 +43,16 @@ class UpdateDataProcess:
 
         self.clear_partner_types()
         self.create_partner_types()
-
         self.clear_partners()
         self.create_partners()
+
+        self.clear_event_types()
+        self.create_event_types()
+        self.clear_events()
+        self.create_events()
+
+        self.create_questions()
+        self.create_choices()
 
     def clear_places(self):
         Place.objects.all().delete()
@@ -60,6 +77,24 @@ class UpdateDataProcess:
     def clear_partners(self):
         Partner.objects.all().delete()
         self.partners = dict()
+
+    def clear_events(self):
+        Event.objects.all().delete()
+        self.events = dict()
+
+    def clear_event_types(self):
+        EventType.objects.all().delete()
+        self.event_types = dict()
+
+    def clear_questions(self):
+        Assessment.objects.all().delete()
+        Page.objects.all().delete()
+        Question.objects.all().delete()
+        self.questions = dict()
+
+    def clear_choices(self):
+        Choice.objects.all().delete()
+        self.choices = dict()
 
     def create_places(self):
         f = StringIO(self.update_data.places_text)
@@ -134,15 +169,16 @@ class UpdateDataProcess:
                         creation_year=row['ANNEE_DE_CREATION'],
                         description_fr=row['DESCRIPTION_FR'],
                         description_en=row['DESCRIPTION_EN'],
-                        index_itinerary=row['INDEX_ITINERARY']
+                        index_itinerary=row['INDEX_ITINERARY'],
+                        off_road=row['HORS_PISTE']
                     )
 
                 if row['PHOTO']:
                     artwork.picture = row['PHOTO']
                     artwork.save()
 
-                if row['PLAN']:
-                    artwork.plan = row['PLAN']
+                if row['LIEU']:
+                    artwork.plan = row['LIEU']
                     artwork.save()
 
                 self.artworks[row['ID_OEUVRE']] = artwork
@@ -185,3 +221,110 @@ class UpdateDataProcess:
                     partner.save()
 
                 self.partners[row['ID_PARTENAIRES']] = partner
+
+
+    def create_event_types(self):
+
+        f = StringIO(self.update_data.event_types_text)
+        reader = csv.DictReader(f)
+        for row in reader:
+
+            if row['NOM_TYPE_EVENEMENT_FR']:
+
+                event_type = EventType.objects.create(
+                        name_fr=row['NOM_TYPE_EVENEMENT_FR'],
+                        name_en=row['NOM_TYPE_EVENEMENT_EN'],
+                    )
+
+                self.event_types[row['ID_TYPE_EVENEMENT']] = event_type
+
+    def create_events(self):
+
+        f = StringIO(self.update_data.events_text)
+        reader = csv.DictReader(f)
+        for row in reader:
+
+            if row['NOM_EVENEMENT']:
+
+                event_date_string = row['DATE'] + ' ' + row['HEURE']
+                event_date = datetime.datetime.strptime(
+                    event_date_string, "%d/%m/%Y %H:%M")
+
+                event = Event.objects.create(
+                        name=row['NOM_EVENEMENT'],
+                        place=self.places[
+                            row['ID_LIEU']],
+                        description_fr=row['DESCRIPTION_FR'],
+                        description_en=row['DESCRIPTION_EN'],
+                        link=row['LIEN_EVENBRITE'],
+                        date=event_date,
+                        event_type=self.event_types[row['ID_TYPE_EVENEMENT']],
+                    )
+
+                if row['PHOTO_EVENEMENT']:
+                    event.picture = row['PHOTO_EVENEMENT']
+                    event.save()
+
+                #self.event_types[row['ID_EVENEMENT']] = event
+
+    def create_questions(self):
+
+        question_types = {
+            'SIMPLE': 'RB',
+            'MULTIPLE': 'CB'
+        }
+
+        if self.update_data.questions_text:
+
+            self.clear_questions()
+
+            f = StringIO(self.update_data.questions_text)
+            reader = csv.DictReader(f)
+            for row in reader:
+
+                if row['QUESTION_FR']:
+
+                    artwork = self.artworks[row['ID_OEUVRE']]
+                    if artwork.assessments.count() > 1:
+                        assessment = artwork.assessments.fisrt()
+                    else:
+                        assessment = Assessment.objects.create(
+                            name=artwork.name + 'assessment',
+                            artwork=artwork
+                        )
+
+                    page = Page.objects.create(
+                        assessment=assessment
+                    )
+
+                    question = Question.objects.create(
+                            label_fr=row['QUESTION_FR'],
+                            label_en=row['QUESTION_EN'],
+                            type=question_types[row['TYPE_QUESTION']],
+                            page=page,
+                            index=row['INDEX_QUESTION'],
+                            explanation_fr=row['EXPLICATION_REPONSE_FR'],
+                            explanation_en=row['EXPLICATION_REPONSE_ENG'],
+                        )
+
+                    self.questions[row['ID_QUESTIONS']] = question
+
+    def create_choices(self):
+
+        if self.update_data.choices_text:
+
+            self.clear_choices()
+
+            f = StringIO(self.update_data.choices_text)
+            reader = csv.DictReader(f)
+            for row in reader:
+
+                if row['TEXTE_CHOIX_FR']:
+
+                    Choice.objects.create(
+                            label_fr=row['TEXTE_CHOIX_FR'],
+                            label_en=row['TEXTE_CHOIX_EN'],
+                            question=self.questions[row['ID_QUESTION']],
+                            is_valid=row['VRAI_FAUX'] == 'VRAI',
+                            index=row['INDEX_CHOIX'],
+                        )

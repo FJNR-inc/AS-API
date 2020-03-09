@@ -3,13 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class EventType(models.Model):
-    key = models.CharField(
-        verbose_name=_("Key (use for front)"),
-        null=False,
-        blank=False,
-        max_length=100,
-        unique=True
-    )
 
     name = models.CharField(
         verbose_name=_("Name"),

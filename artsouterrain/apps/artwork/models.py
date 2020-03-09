@@ -209,6 +209,11 @@ class Artwork(models.Model):
         verbose_name=_('QR Code Token')
     )
 
+    off_road = models.BooleanField(
+        verbose_name=_('Off road'),
+        default=True
+    )
+
     def __str__(self):
         return f'{self.name}'
 
@@ -292,28 +297,16 @@ class UpdateData(models.Model):
         auto_now_add=True
     )
 
-    places = models.FileField(
-        verbose_name=_('Places file')
-    )
-
-    artworks = models.FileField(
-        verbose_name=_('Artworks File')
-    )
-
-    artwork_types = models.FileField(
-        verbose_name=_('Artwork Types file')
-    )
-
-    artists = models.FileField(
-        verbose_name=_('Artists File')
-    )
-
     places_text = models.TextField(null=True, blank=True)
     partner_type_text = models.TextField(null=True, blank=True)
     artwork_types_text = models.TextField(null=True, blank=True)
     partner_text = models.TextField(null=True, blank=True)
     artworks_text = models.TextField(null=True, blank=True)
     artists_text = models.TextField(null=True, blank=True)
+    events_text = models.TextField(null=True, blank=True)
+    event_types_text = models.TextField(null=True, blank=True)
+    questions_text = models.TextField(null=True, blank=True)
+    choices_text = models.TextField(null=True, blank=True)
 
     def update_data(self):
 

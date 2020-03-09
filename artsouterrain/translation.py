@@ -2,6 +2,7 @@ from modeltranslation.translator import TranslationOptions, register
 
 from artsouterrain.apps.artwork.models import PartnerType, ArtworkMedia, \
     Artwork, ArtworkType, Place, Artist, Partner
+from artsouterrain.apps.event.models import EventType, Event
 from artsouterrain.apps.quizz.models import Choice, Question, Assessment
 
 
@@ -79,5 +80,21 @@ class ChoiceTranslationOptions(TranslationOptions):
     fields = (
         'label',
     )
+
+
+@register(EventType)
+class EventTypeTranslationOptions(TranslationOptions):
+    fields = (
+        'name',
+    )
+
+
+@register(Event)
+class EventTranslationOptions(TranslationOptions):
+    fields = (
+        'description',
+    )
+
+
 
 

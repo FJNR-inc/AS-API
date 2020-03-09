@@ -16,7 +16,9 @@ app_name = "event"
 
 router = OptionalSlashSimpleRouter()
 router.register('event', views.EventViewSet)
+router.register('event_extract', views.EventExtractViewSet)
 router.register('event_type', views.EventTypeViewSet)
+router.register('event_type_extract', views.EventTypeExtractViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),  # includes router generated URL
