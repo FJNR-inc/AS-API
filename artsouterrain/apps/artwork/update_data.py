@@ -286,10 +286,10 @@ class UpdateDataProcess:
 
                     artwork = self.artworks[row['ID_OEUVRE']]
                     if artwork.assessments.count() > 1:
-                        assessment = artwork.assessments.fisrt()
+                        assessment = artwork.assessments.all().first()
                     else:
                         assessment = Assessment.objects.create(
-                            name=artwork.name + 'assessment',
+                            name=artwork.name + ' assessment',
                             artwork=artwork
                         )
 
